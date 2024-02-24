@@ -4,7 +4,7 @@ CREATE DATABASE employeeData_db;
 USE employeeData_db;
 
 CREATE TABLE department (
-  id INT NOT NULL Auto_INCREMENT PRIMARY KEY,
+  id INT NOT NULL PRIMARY KEY,
   department_name VARCHAR(30) NOT NULL
 );
 
