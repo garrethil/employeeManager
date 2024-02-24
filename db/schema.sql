@@ -4,7 +4,7 @@ CREATE DATABASE employeeData_db;
 USE employeeData_db;
 
 CREATE TABLE department (
-  id INT NOT NULL PRIMARY KEY,
+  id INT NOT NULL Auto_INCREMENT PRIMARY KEY,
   department_name VARCHAR(30) NOT NULL
 );
 
@@ -24,5 +24,5 @@ CREATE TABLE employee (
   role_id INT,
   manager_id INT,
   FOREIGN KEY (role_id) REFERENCES roles(id),
-  CONSTRAINT fk_manager_id FOREIGN KEY (manager_id) REFERENCES employees(id)
+  CONSTRAINT fk_manager_id FOREIGN KEY (manager_id) REFERENCES employee(id)
 );
