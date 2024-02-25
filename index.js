@@ -2,6 +2,7 @@ const express = require('express');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
+const renderTitle = require('./titleText');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -35,7 +36,7 @@ function startPrompt() {
 
     db.query(empTabQ, function (err, results) {
       console.table(results);
-
+      console.log(' ');
       startPrompt();
     });
 
@@ -100,6 +101,7 @@ function startPrompt() {
             console.log(err);
           }
           console.log(`New employee added to the employee table`);
+          console.log(' ');
           startPrompt();
         })
         })
@@ -122,6 +124,7 @@ function startPrompt() {
               console.log(err);
             }
             console.log(`New employee added to the employee table`);
+            console.log(' ');
             startPrompt();
           })
         
@@ -161,6 +164,7 @@ function startPrompt() {
             console.log(error);
           } 
             console.log('Employees Role updated');
+            console.log(' ');
             startPrompt();
         }
       )}
@@ -177,6 +181,7 @@ const empRolQ = `SELECT r.title, r.salary, d.department_name as department
 
     db.query(empRolQ, function (err, results) {
       console.table(results);
+      console.log(' ');
       startPrompt();
     });
   } else if (answers.action === "Add Role") {
@@ -211,6 +216,7 @@ const departments = results.map(row => row.department_name);
             console.log(err);
           }
           console.log(`${answers.newRole} role added to the roles table`);
+          console.log(' ');
           startPrompt();
         })
         })
@@ -220,6 +226,7 @@ const departments = results.map(row => row.department_name);
   } else if (answers.action === "View All Departments") {
     db.query('SELECT id, department_name as department FROM department', function (err, results) {
       console.table(results);
+      console.log(' ');
       startPrompt();
     });
   } else if (answers.action === "Add Department") {
@@ -237,13 +244,14 @@ const departments = results.map(row => row.department_name);
           console.log(err);
         }
         console.log(`${dept} department added to the department table`);
+        console.log(' ');
         startPrompt();
       });
     })
   }
 })
 }
-
+renderTitle();
 startPrompt();
 
 
