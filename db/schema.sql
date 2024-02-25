@@ -23,6 +23,7 @@ CREATE TABLE employee (
   last_name VARCHAR(30) NOT NULL,
   role_id INT,
   manager_id INT,
+  manager BOOLEAN,
   FOREIGN KEY (role_id) REFERENCES roles(id),
   CONSTRAINT fk_manager_id FOREIGN KEY (manager_id) REFERENCES employee(id)
 );

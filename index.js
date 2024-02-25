@@ -40,7 +40,95 @@ function startPrompt() {
     });
 
   } else if (answers.action === "Add Employee") {
+      db.query('SELECT title FROM roles', function (error, results) {
+        const roles = results.map(row => row.title);
+        db.query('SELECT first_name, last_name FROM employee WHERE manager = TRUE', function (error, results) {
+          if (error) {
+              console.error(error);
+          } else if (results) {
+              const managers = results.map(row => `${row.first_name} ${row.last_name}`);
+              const managerOpt = ['none', ...managers];
 
+    inquirer.prompt([
+      {
+        type: "input",
+        name: "firstName",
+        message: "What is the first name of the new employee?",
+      },
+      {
+        type: "input",
+        name: "lastName",
+        message: "What is the last name of the new employee?",
+      },
+      {
+        type: "list",
+        name: "empRole",
+        message: "What is the title of their role?",
+        choices: roles
+      },
+      {
+        type: "list",
+        name: "manager",
+        message: "Who is their manager?",
+        choices: managerOpt
+      },
+      {
+        type: "list",
+        name: "isManager",
+        message: "Are they a manager?",
+        choices: ['yes', 'no']
+      },
+    ]).then((answers) => {
+       let isManager;
+      if (answers.isManager === 'yes') {
+        isManager = true;
+      }else {
+        isManager = false;
+      }
+      if (answers.manager === 'none') {
+        let selectedManager = null;
+
+        db.query(`SELECT id FROM roles WHERE title = '${answers.empRole}'`, function(error, results) {
+          if (error) {
+            console.log(error);
+          }
+          const selectedRole = results[0].id;
+        
+
+        db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id, manager) VALUES ('${answers.firstName}', '${answers.lastName}', ${selectedRole}, ${selectedManager}, ${isManager})`, (err, results) => {
+          if (err) {
+            console.log(err);
+          }
+          console.log(`New employee added to the employee table`);
+          startPrompt();
+        })
+        })
+
+      } else {
+        let nameArray = answers.manager.split(" ");
+        db.query(`SELECT id FROM employee WHERE first_name = '${nameArray[0]}' AND last_name = '${nameArray[1]}'`, function (error, results) {
+          if (error) {
+            console.log(error);
+          } 
+          let selectedManager = results[0].id;
+          db.query(`SELECT id FROM roles WHERE title = '${answers.empRole}'`, function(error, results) {
+            if (error) {
+              console.log(error);
+            }
+            const selectedRole = results[0].id;
+
+          db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id, manager) VALUES ('${answers.firstName}', '${answers.lastName}', '${selectedRole}', '${selectedManager}', ${isManager})`, (err, results) => {
+            if (err) {
+              console.log(err);
+            }
+            console.log(`New employee added to the employee table`);
+            startPrompt();
+          })
+        
+        })})}
+
+      })}
+  })});
   }else if (answers.action === "Update Employee Role") {
  
   } else if (answers.action === "View all Roles") {
