@@ -73,7 +73,21 @@ const departments = results.map(row => row.department_name);
           message: "What department does the new role belong to?",
           choices: departments
         },
-      ])
+      ]).then((answers) => {
+
+        db.query(`SELECT id FROM department WHERE department_name = '${answers.roleDept}'`, (err, results) => {
+          let roleId = results[0].id;
+    
+        
+        db.query(`INSERT INTO roles (title, salary, department_id) VALUES ('${answers.newRole}', '${answers.salary}', ${roleId})`, (err, results) => {
+          if (err) {
+            console.log(err);
+          }
+          console.log(`${answers.newRole} role added to the roles table`);
+          startPrompt();
+        })
+        })
+      })
     })
     
   } else if (answers.action === "View All Departments") {
